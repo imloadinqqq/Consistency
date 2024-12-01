@@ -1,10 +1,12 @@
 # Consistency
+2024-12-01
 - [Consistency](#consistency)
     - [Description](#description)
     - [Needs](#needs)
     - [Commands](#commands)
     - [Tech Stack](#tech-stack)
   - [Database](#database)
+    - [Database Setup](#db-setup)
     - [DB Layout](#db-layout)
     - [Queries](#queries)
     - [Example Output](#example-output)
@@ -31,7 +33,19 @@ Basic CRUD operations
 ### Tech Stack
 Database - MySQL  
 Language - Python  
+****
 ## Database
+### Database Setup
+Start MySQL Server  
+Execute `CREATE DATABASE habits; USE habits;`  
+This will create a local database named 'habits'  
+Create .env file in the root of this project, it will include the following:
+* MySQL username
+* MySQL password
+* Hostname (localhost)
+* DB Name (habits)
+This .env file will be used to connect to the local database and will ensure security  
+
 ### DB Layout
 | id       | Task          | Desc                 | Freq    |
 | -------- | ------------- | -------------------- | ------- |
@@ -39,9 +53,9 @@ Language - Python
 | 2        | Work Out      | push pull legs split | Daily
 | 3        | Clean Room    |""                    | Weekly
 ### Queries
-<u>AddTask</u> `INSERT INTO Habits VALUES (id, task, desc, freq)`  
-<u>DeleteTask</u> `DELETE FROM Habits WHERE id=input`  
-<u>ShowTasks</u> `SELECT * FROM Habits`
+<u>AddTask</u> `INSERT INTO habits VALUES (id, task, desc, freq)`  
+<u>DeleteTask</u> `DELETE FROM habits WHERE id=input`  
+<u>ShowTasks</u> `SELECT * FROM habits`
 ### Example Output
 Command: `consistency show`  
 Output:
