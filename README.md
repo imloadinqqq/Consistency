@@ -53,7 +53,7 @@ This .env file will be used to connect to the local database and will ensure sec
 | 2        | Work Out      | push pull legs split | Daily
 | 3        | Clean Room    |""                    | Weekly
 ### Queries
-<u>AddTask</u> `INSERT INTO habits VALUES (id, task, desc, freq)`  
+<u>AddTask</u> `INSERT INTO habits (Task, Desc, Freq) VALUES (task, desc, freq)`  
 <u>DeleteTask</u> `DELETE FROM habits WHERE id=input`  
 <u>ShowTasks</u> `SELECT * FROM habits`
 ### Example Output
