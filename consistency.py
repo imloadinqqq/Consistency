@@ -4,6 +4,7 @@ import queries as qr
 import os
 from tabulate import tabulate
 
+
 load_dotenv(dotenv_path='./.env')
 
 # connect to local database
