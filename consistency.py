@@ -1,10 +1,15 @@
 import mysql.connector
 from dotenv import load_dotenv
 import queries as qr
-import os
+import os, sys
+import logging
 from tabulate import tabulate
 
+logger = logging.getLogger(__name__)
+
 load_dotenv(dotenv_path='./.env')
+logging.basicConfig(filename='consistency.log', level=logging.INFO)
+logger.info('Started')
 
 # connect to local database
 def connect(user, host, port, database, create_table_query):
@@ -16,23 +21,23 @@ def connect(user, host, port, database, create_table_query):
             database=database
         )
         if connection.is_connected():
-            print("Connected")
+            logger.info('Connected to DB')
             
             if create_table_query:
                 with connection.cursor() as cursor:
                     cursor.execute(create_table_query)
-                    print("Created Table")
+                    logger.info("Created Table")
 
             return connection
 
     except mysql.connector.Error as err:
-        print(f"Error Connecting: {err}")
+        logger.info(f"Error Connecting: {err}")
         return None
 
 # add task to database
 def addTask(connection):
     if not connection.is_connected():
-        print("Re-establishing the database connection...")
+        logger.info("Re-establishing the database connection...")
         connection.reconnect(attempts=3, delay=5)
     if connection:
         try:
@@ -44,9 +49,8 @@ def addTask(connection):
                 print("Invalid input. Please enter 'Daily' or 'Weekly'.")
                 return
             data = (task, desc, freq)
-            print("right before connection.cursor in addTask()")
             with connection.cursor() as cursor:
-                print("Begin cursor in addTask")
+                logger.info("Begin cursor in addTask")
                 
                 cursor.execute(qr.AddTask, data)
                 connection.commit()
@@ -54,21 +58,19 @@ def addTask(connection):
                 cursor.execute(qr.ShowTasks)
                 results = cursor.fetchall()
                 for row in results:
-                    print(row)
-
-            
-            print("Task added successfully.")
+                    print(row)      # WORKING HERE, TRYING TO FIGURE OUT HOW TO GET DATA TO TABULATE
+                return results
         except mysql.connector.Error as err:
-            print(f"Error in addTask: {err}, {err.errno}")
+            logger.info(f"Error in addTask: {err}, {err.errno}")
 
 # delete a task based on id
 def deleteTask(connection, task):
     try:
         with connection.cursor() as cursor:
             cursor.execute(qr.DeleteTask, task)
-            print(f"Task {task} deleted")
+            logger.info(f"Task {task} deleted")
     except mysql.connector.Error as err:
-        print(f"Error in deleteTask: {err}")
+        logger.info(f"Error in deleteTask: {err}")
 
 # show tasks in db form, can take input for specific id
 def showTask(connection, *args):
@@ -76,7 +78,7 @@ def showTask(connection, *args):
         with connection.cursor() as cursor:
             cursor.execute(qr.ShowTasks)
     except mysql.connector.Error as err:
-        print(f"Error in showTask: {err}")
+        logger.info(f"Error in showTask: {err}")
     
 # print tabular format of weekly tasks
 def printTableForm(data, headers):
